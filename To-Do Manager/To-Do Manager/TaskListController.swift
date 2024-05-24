@@ -8,38 +8,105 @@
 import UIKit
 
 class TaskListController: UITableViewController {
-
+    
+    // хранилище задач
+    var taskStorage: TaskStorageProtocol = TaskStorage()
+    // коллекция задач
+    var tasks: [TaskPriority: [TaskProtocol]] = [:]
+    // секции
+    var sectionsTypesPosition: [TaskPriority] = [.high, .normal]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        // загрузка задач
+        loadTasks()
+    }
+    
+    private func loadTasks() {
+        // подготовка коллекции с задачам
+        sectionsTypesPosition.forEach { taskType in
+            tasks[taskType] = []
+        }
+        // загрузска задач из хранилища
+        taskStorage.loadTasks().forEach { task in
+            tasks[task.type]?.append(task)
+        }
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return tasks.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        let taskType = sectionsTypesPosition[section]
+        guard let currentTaskType = tasks[taskType] else {
+            return 0
+        }
+        return currentTaskType.count
     }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+    
+    private func getConfiguredTaskCell(for indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellConstraints", for: indexPath)
+        
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard let currentTask = tasks[taskType]?[indexPath.row] else {
+            return cell
+        }
+        
+        // получение символа
+        let symbolCell = cell.viewWithTag(1) as? UILabel
+        // получение ячейки
+        let titleCell = cell.viewWithTag(2) as? UILabel
+        
+        // изменяем символ ячейки
+        symbolCell?.text = getSymbol(with: currentTask.status)
+        // изменяем текст
+        titleCell?.text = currentTask.title
+        
+        if currentTask.status == .planned {
+            symbolCell?.textColor = .black
+            titleCell?.textColor = .black
+        } else {
+            symbolCell?.textColor = .gray
+            titleCell?.textColor = .gray
+        }
+        
         return cell
     }
-    */
+    
+    private func getSymbol(with status: TaskStatus) -> String {
+        var resultSymbol: String
+        if status == .planned {
+            resultSymbol = "\u{25CB}"
+        } else if status == .comleted {
+            resultSymbol = "\u{25C9}"
+        } else {
+            resultSymbol = ""
+        }
+        
+        return resultSymbol
+    }
+
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        return getConfiguredTaskCell(for: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        var taskType = sectionsTypesPosition[section]
+        var title: String?
+        
+        if taskType == .high {
+            title = "Важные"
+        } else if taskType == .normal {
+            title = "Текущие"
+        }
+        
+        return title
+    }
 
     /*
     // Override to support conditional editing of the table view.
