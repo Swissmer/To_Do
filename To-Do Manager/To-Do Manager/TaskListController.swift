@@ -12,9 +12,22 @@ class TaskListController: UITableViewController {
     // хранилище задач
     var taskStorage: TaskStorageProtocol = TaskStorage()
     // коллекция задач
-    var tasks: [TaskPriority: [TaskProtocol]] = [:]
+    var tasks: [TaskPriority: [TaskProtocol]] = [:] {
+        didSet {
+            for (taskGroupPrioruty, taskGroup) in tasks {
+                tasks[taskGroupPrioruty] = taskGroup.sorted { task1, task2 in
+                    let taskPosition1 = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
+                    let taskPosition2 = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
+                    
+                    return taskPosition1 < taskPosition2
+                }
+            }
+        }
+    }
     // секции
     var sectionsTypesPosition: [TaskPriority] = [.high, .normal]
+    // порядок отображения задач
+    var tasksStatusPosition: [TaskStatus] = [.planned, .comleted]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +44,7 @@ class TaskListController: UITableViewController {
         taskStorage.loadTasks().forEach { task in
             tasks[task.type]?.append(task)
         }
+        
     }
 
     // MARK: - Table view data source
@@ -47,13 +61,15 @@ class TaskListController: UITableViewController {
         return currentTaskType.count
     }
     
-    private func getConfiguredTaskCell(for indexPath: IndexPath) -> UITableViewCell {
+    private func getConfiguredTaskCell_contraint(for indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellConstraints", for: indexPath)
         
         let taskType = sectionsTypesPosition[indexPath.section]
         guard let currentTask = tasks[taskType]?[indexPath.row] else {
             return cell
         }
+        
+        
         
         // получение символа
         let symbolCell = cell.viewWithTag(1) as? UILabel
@@ -76,6 +92,29 @@ class TaskListController: UITableViewController {
         return cell
     }
     
+    private func getConfiguredTaskCell_stack(for indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellStack", for: indexPath) as! TaskCell
+        
+        let taskType = sectionsTypesPosition[indexPath.section]
+        
+        guard let currentTask = tasks[taskType]?[indexPath.row] else {
+            return cell
+        }
+        
+        cell.title.text = currentTask.title
+        cell.symbol.text = getSymbol(with: currentTask.status)
+        
+        if currentTask.status == .planned {
+            cell.title.textColor = .black
+            cell.symbol.textColor = .black
+        } else {
+            cell.title.textColor = .gray
+            cell.symbol.textColor = .gray
+        }
+        
+        return cell
+    }
+    
     private func getSymbol(with status: TaskStatus) -> String {
         var resultSymbol: String
         if status == .planned {
@@ -92,11 +131,14 @@ class TaskListController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        return getConfiguredTaskCell(for: indexPath)
+        // на основе ограничений
+        // return getConfiguredTaskCell_contraint(for: indexPath)
+        // на основе стека
+        return getConfiguredTaskCell_stack(for: indexPath)
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        var taskType = sectionsTypesPosition[section]
+        let taskType = sectionsTypesPosition[section]
         var title: String?
         
         if taskType == .high {
@@ -108,6 +150,42 @@ class TaskListController: UITableViewController {
         return title
     }
 
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // проверяем существование задачи
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard var _ = tasks[taskType]?[indexPath.row] else {
+            return
+        }
+        
+        if tasks[taskType]?[indexPath.row].status == .planned {
+            tasks[taskType]?[indexPath.row].status = .comleted
+        } else if tasks[taskType]?[indexPath.row].status == .comleted {
+            tasks[taskType]?[indexPath.row].status = .planned
+        }
+        
+        tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+    }
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard var _ = tasks[taskType]?[indexPath.row] else {
+            return nil
+        }
+        
+        guard tasks[taskType]?[indexPath.row].status == .comleted else {
+            return nil
+        }
+        
+        
+        let action = UIContextualAction(style: .normal, title: "Не выполнена") { _, _, _ in
+            self.tasks[taskType]![indexPath.row].status = .planned
+            tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [action])
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
