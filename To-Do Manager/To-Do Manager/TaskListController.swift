@@ -33,6 +33,8 @@ class TaskListController: UITableViewController {
         super.viewDidLoad()
         // загрузка задач
         loadTasks()
+        // кнопка активации режима редактирования
+        navigationItem.leftBarButtonItem = editButtonItem
     }
     
     private func loadTasks() {
@@ -46,13 +48,13 @@ class TaskListController: UITableViewController {
         }
         
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return tasks.count
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let taskType = sectionsTypesPosition[section]
         guard let currentTaskType = tasks[taskType] else {
@@ -127,10 +129,10 @@ class TaskListController: UITableViewController {
         
         return resultSymbol
     }
-
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         // на основе ограничений
         // return getConfiguredTaskCell_contraint(for: indexPath)
         // на основе стека
@@ -149,7 +151,7 @@ class TaskListController: UITableViewController {
         
         return title
     }
-
+    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // проверяем существование задачи
@@ -184,51 +186,87 @@ class TaskListController: UITableViewController {
             tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
         }
         
-        return UISwipeActionsConfiguration(actions: [action])
+        
+        let actionEditInstance = UIContextualAction(style: .normal, title: "Изменить") { _, _, _ in
+            // загрузка сцены со storyboard
+            let editScreen = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "TaskEditController") as! TaskEditConroller
+            // передача значений редактируемой задачи
+            editScreen.taskText = self.tasks[taskType]![indexPath.row].title
+            editScreen.taskType = self.tasks[taskType]![indexPath.row].type
+            editScreen.taskStatus = self.tasks[taskType]![indexPath.row].status
+            // передача обработчика для сохранения задачи
+            editScreen.doAfterEdit = { [unowned self] title, type, status in
+                let editedTask = Task(title: title, type: type, status: status)
+                tasks[taskType]![indexPath.row] = editedTask
+                tableView.reloadData()
+            }
+            // переход к экрану редактирования
+            self.navigationController?.pushViewController(editScreen, animated: true)
+        }
+        
+        // изменяем цвет фона кнопки с действием
+        actionEditInstance.backgroundColor = .darkGray
+        
+        // создаем объект, описывающий доступные действия
+        // в зависимости от статуса задачи будет отображено 1 или 2 действия
+        let actionsConfiguration: UISwipeActionsConfiguration
+        if tasks[taskType]![indexPath.row].status == .comleted {
+            actionsConfiguration = UISwipeActionsConfiguration(actions:
+                                                                [action, actionEditInstance])
+        } else {
+            actionsConfiguration = UISwipeActionsConfiguration(actions:
+                                                                [actionEditInstance])
+        }
+        return actionsConfiguration
+        
+        
     }
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
+    
+    // режим редактирования (обработка нажатия)
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        let taskType = sectionsTypesPosition[indexPath.section]
+        
+        tasks[taskType]?.remove(at: indexPath.row)
+        
+        tableView.deleteRows(at: [indexPath], with: .automatic)
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
+    
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
         return true
     }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    // Реализация перемещения ячеек
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let taskTypeFrom = sectionsTypesPosition[sourceIndexPath.section]
+        let taskTypeTo = sectionsTypesPosition[destinationIndexPath.section]
+        
+        // безопастное извлечение
+        guard let movedTask = tasks[taskTypeFrom]?[sourceIndexPath.row] else {
+            return
+        }
+        
+        // удаление из старого места
+        tasks[taskTypeFrom]!.remove(at: sourceIndexPath.row)
+        
+        // добавление в новое место
+        tasks[taskTypeTo]!.insert(movedTask, at: destinationIndexPath.row)
+        
+        if taskTypeFrom != taskTypeTo {
+            tasks[taskTypeTo]![destinationIndexPath.row].type = taskTypeTo
+        }
+        
+        //  обновление данных таблицы
+        tableView.reloadData()
     }
-    */
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toCreateScreen" {
+            let destination = segue.destination as! TaskEditConroller
+            destination.doAfterEdit = { [unowned self] title, type, status in
+                let newTask = Task(title: title, type: type, status: status)
+                tasks[type]?.append(newTask)
+                tableView.reloadData()
+            }
+        }
+    }
 }

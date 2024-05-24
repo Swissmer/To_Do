@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF10759A2C00BBDB0098E2D2 /* TaskEditConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1075992C00BBDB0098E2D2 /* TaskEditConroller.swift */; };
+		EF10759C2C00C2170098E2D2 /* TaskTypeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF10759B2C00C2170098E2D2 /* TaskTypeController.swift */; };
+		EF10759F2C012A380098E2D2 /* TaskTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF10759D2C012A380098E2D2 /* TaskTypeCell.swift */; };
+		EF1075A02C012A380098E2D2 /* TaskTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF10759E2C012A380098E2D2 /* TaskTypeCell.xib */; };
 		EFFE5CEB2C00758D00D57C8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE5CEA2C00758D00D57C8D /* AppDelegate.swift */; };
 		EFFE5CED2C00758D00D57C8D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFFE5CEC2C00758D00D57C8D /* SceneDelegate.swift */; };
 		EFFE5CF22C00758D00D57C8D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EFFE5CF12C00758D00D57C8D /* Base */; };
@@ -19,6 +23,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF1075992C00BBDB0098E2D2 /* TaskEditConroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEditConroller.swift; sourceTree = "<group>"; };
+		EF10759B2C00C2170098E2D2 /* TaskTypeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTypeController.swift; sourceTree = "<group>"; };
+		EF10759D2C012A380098E2D2 /* TaskTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTypeCell.swift; sourceTree = "<group>"; };
+		EF10759E2C012A380098E2D2 /* TaskTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TaskTypeCell.xib; sourceTree = "<group>"; };
 		EFFE5CE72C00758D00D57C8D /* To-Do Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "To-Do Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFFE5CEA2C00758D00D57C8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EFFE5CEC2C00758D00D57C8D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +75,8 @@
 				EFFE5CEA2C00758D00D57C8D /* AppDelegate.swift */,
 				EFFE5CEC2C00758D00D57C8D /* SceneDelegate.swift */,
 				EFFE5CFE2C00765F00D57C8D /* TaskListController.swift */,
+				EF1075992C00BBDB0098E2D2 /* TaskEditConroller.swift */,
+				EF10759B2C00C2170098E2D2 /* TaskTypeController.swift */,
 				EFFE5CF02C00758D00D57C8D /* Main.storyboard */,
 				EFFE5CF32C00759000D57C8D /* Assets.xcassets */,
 				EFFE5CF52C00759000D57C8D /* LaunchScreen.storyboard */,
@@ -96,6 +106,8 @@
 			isa = PBXGroup;
 			children = (
 				EFFE5D072C00845300D57C8D /* TaskCell.swift */,
+				EF10759D2C012A380098E2D2 /* TaskTypeCell.swift */,
+				EF10759E2C012A380098E2D2 /* TaskTypeCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -160,6 +172,7 @@
 			files = (
 				EFFE5CF42C00759000D57C8D /* Assets.xcassets in Resources */,
 				EFFE5CF72C00759000D57C8D /* Base in Resources */,
+				EF1075A02C012A380098E2D2 /* TaskTypeCell.xib in Resources */,
 				EFFE5CF22C00758D00D57C8D /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -173,10 +186,13 @@
 			files = (
 				EFFE5D022C00770500D57C8D /* Task.swift in Sources */,
 				EFFE5CEB2C00758D00D57C8D /* AppDelegate.swift in Sources */,
+				EF10759A2C00BBDB0098E2D2 /* TaskEditConroller.swift in Sources */,
 				EFFE5CED2C00758D00D57C8D /* SceneDelegate.swift in Sources */,
+				EF10759C2C00C2170098E2D2 /* TaskTypeController.swift in Sources */,
 				EFFE5D042C0078C200D57C8D /* TaskStorage.swift in Sources */,
 				EFFE5D082C00845300D57C8D /* TaskCell.swift in Sources */,
 				EFFE5CFF2C00765F00D57C8D /* TaskListController.swift in Sources */,
+				EF10759F2C012A380098E2D2 /* TaskTypeCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,10 +1,17 @@
+//
+//  TaskTypeCell.swift
+//  To-Do Manager
+//
+//  Created by Даниил Семёнов on 24.05.2024.
+//
+
 import UIKit
 
-class TaskCell: UITableViewCell {
+class TaskTypeCell: UITableViewCell {
     
-    @IBOutlet var symbol: UILabel!
-    @IBOutlet var title: UILabel!
-    //
+    @IBOutlet var typeTitle: UILabel!
+    @IBOutlet var typeDescription: UILabel!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -15,5 +22,5 @@ class TaskCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
 }
