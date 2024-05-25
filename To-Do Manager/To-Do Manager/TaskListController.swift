@@ -1,27 +1,26 @@
-//
-//  TaskListController.swift
-//  To-Do Manager
-//
-//  Created by Даниил Семёнов on 24.05.2024.
-//
-
 import UIKit
 
 class TaskListController: UITableViewController {
     
     // хранилище задач
-    var taskStorage: TaskStorageProtocol = TaskStorage()
+    var taskStorage: TasksStorageProtocol = TasksStorage()
     // коллекция задач
     var tasks: [TaskPriority: [TaskProtocol]] = [:] {
         didSet {
-            for (taskGroupPrioruty, taskGroup) in tasks {
-                tasks[taskGroupPrioruty] = taskGroup.sorted { task1, task2 in
-                    let taskPosition1 = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
-                    let taskPosition2 = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
-                    
-                    return taskPosition1 < taskPosition2
+            for (tasksGroupPriority, tasksGroup) in tasks {
+                tasks[tasksGroupPriority] = tasksGroup.sorted{ task1, task2 in
+                    let task1position = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
+                    let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
+                    return task1position < task2position
                 }
             }
+            
+            var savingArray: [TaskProtocol] = []
+            tasks.forEach { _, value in
+                savingArray += value
+            }
+            taskStorage.saveTasks(savingArray)
+//            print("выгрузили:", taskStorage.loadTasks())
         }
     }
     // секции
@@ -32,21 +31,20 @@ class TaskListController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // загрузка задач
-        loadTasks()
         // кнопка активации режима редактирования
         navigationItem.leftBarButtonItem = editButtonItem
     }
     
-    private func loadTasks() {
-        // подготовка коллекции с задачам
+    // получение списка задач, из разбор и установка в свойство tasks
+    func setTasks(_ tasksCollection: [TaskProtocol]) {
+        // подготовка коллекции с задачами
         sectionsTypesPosition.forEach { taskType in
             tasks[taskType] = []
         }
-        // загрузска задач из хранилища
-        taskStorage.loadTasks().forEach { task in
+        // загрузка и разбор задач из хранилища
+        tasksCollection.forEach { task in
             tasks[task.type]?.append(task)
         }
-        
     }
     
     // MARK: - Table view data source
@@ -176,11 +174,6 @@ class TaskListController: UITableViewController {
             return nil
         }
         
-        guard tasks[taskType]?[indexPath.row].status == .comleted else {
-            return nil
-        }
-        
-        
         let action = UIContextualAction(style: .normal, title: "Не выполнена") { _, _, _ in
             self.tasks[taskType]![indexPath.row].status = .planned
             tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
@@ -218,8 +211,6 @@ class TaskListController: UITableViewController {
                                                                 [actionEditInstance])
         }
         return actionsConfiguration
-        
-        
     }
     
     // режим редактирования (обработка нажатия)

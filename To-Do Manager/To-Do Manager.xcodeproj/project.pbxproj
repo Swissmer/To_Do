@@ -74,13 +74,13 @@
 				EFFE5D002C0076FA00D57C8D /* Model */,
 				EFFE5CEA2C00758D00D57C8D /* AppDelegate.swift */,
 				EFFE5CEC2C00758D00D57C8D /* SceneDelegate.swift */,
-				EFFE5CFE2C00765F00D57C8D /* TaskListController.swift */,
-				EF1075992C00BBDB0098E2D2 /* TaskEditConroller.swift */,
-				EF10759B2C00C2170098E2D2 /* TaskTypeController.swift */,
 				EFFE5CF02C00758D00D57C8D /* Main.storyboard */,
 				EFFE5CF32C00759000D57C8D /* Assets.xcassets */,
 				EFFE5CF52C00759000D57C8D /* LaunchScreen.storyboard */,
 				EFFE5CF82C00759000D57C8D /* Info.plist */,
+				EFFE5CFE2C00765F00D57C8D /* TaskListController.swift */,
+				EF1075992C00BBDB0098E2D2 /* TaskEditConroller.swift */,
+				EF10759B2C00C2170098E2D2 /* TaskTypeController.swift */,
 			);
 			path = "To-Do Manager";
 			sourceTree = "<group>";
@@ -349,6 +349,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -376,6 +377,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
