@@ -20,9 +20,9 @@
 
 <div style="display: flex; justify-content: space-around;">
   <img src="./misc/images/launchScreen.png" width="200">
-  <img src="./misc/images/1.png" width="200">
-  <img src="./misc/images/2.png" width="200">
-  <img src="./misc/images/3.png" width="200">
+  <img src="./misc/images/main1.png" width="200">
+  <img src="./misc/images/create1.png" width="200">
+  <img src="./misc/images/create2.png" width="200">
 </div>
 
 ## Support
